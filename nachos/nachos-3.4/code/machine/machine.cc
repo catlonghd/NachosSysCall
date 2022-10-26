@@ -212,6 +212,13 @@ void Machine::WriteRegister(int num, int value)
 	registers[num] = value;
     }
 
+
+/*  Copy data from user space to kernel space
+    Input: user space address
+           limit of buffers
+
+    Output: Buffer
+*/
 char* Machine::User2System(int virtAddr, int limit){
     int i;	//index
 	int oneChar;
@@ -230,6 +237,13 @@ char* Machine::User2System(int virtAddr, int limit){
 	return kernelBuf;
 }
 
+
+/* Copy data from kernel space to user space
+   Input: Kernel space address
+          Length of buffer
+          Buffer
+   Output: The number of bytes copy
+*/
 int Machine::System2User(int virtAddr, int len, char* buffer) {
 	if (len < 0) return -1;
 	if (0 == len) return len;
@@ -245,6 +259,7 @@ int Machine::System2User(int virtAddr, int len, char* buffer) {
 }
 
 
+// Increase PC before system call return the value
 // Put this function at the end of each system call 
 void Machine::IncreaseProgramCounter(){
     WriteRegister(PrevPCReg, ReadRegister(PCReg));
