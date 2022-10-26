@@ -48,7 +48,7 @@
 //	are in machine.h.
 //----------------------------------------------------------------------
 
-void
+void 
 ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
@@ -64,7 +64,8 @@ ExceptionHandler(ExceptionType which)
     case NoException:
         return;
     case PageFaultException:
-        printf("PageFaulException dang dien ra")
+        DEBUG('a', "\nNo valid translation found");
+        printf("No valid translation found")
         interrupt->Halt();
         break;
     
@@ -76,6 +77,33 @@ ExceptionHandler(ExceptionType which)
                 break;
             
         }
+        break;
+    case ReadOnlyException:
+        DEBUG('a', "\nWrite attempted to page  marked \"read-only\".");
+        printf("\n\nWrite attempted to page  marked \"read-only\".");
+        interrupt->Halt();
+        break;
+    case BusErrorException:
+        DEBUG('a', "\nTranslation resulted in an invalid physical address.");
+        printf("\n\nTranslation resulted in an invalid physical address.");
+        interrupt->Halt();
+        break;
+    case AddressErrorException:
+        DEBUG('a', "\nUnaligned reference or one that was beyond the end of the address space.");
+        printf("\n\nUnaligned reference or one that was beyond the end of the address space.");
+        interrupt->Halt();
+        break;
+    case OverflowException:
+        DEBUG('a', "\nInteger overflow in add or sum.");
+        printf("\n\nInteger overflow in add or sum.");
+        interrupt->Halt();
+        break;
+    case IllegalInstrException:
+        DEBUG('a', "\nUnimplemented or reserved instr.");
+        printf("\n\nInteger overflow in add or sum.");
+        interrupt->Halt();
+        break;
+    case NumExceptionTypes:
         break;
     default:
         printf("Unexpected user mode exception %d %d\n", which, type);
