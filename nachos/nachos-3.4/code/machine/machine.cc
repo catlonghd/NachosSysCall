@@ -212,3 +212,42 @@ void Machine::WriteRegister(int num, int value)
 	registers[num] = value;
     }
 
+char* Machine::User2System(int virtAddr, int limit){
+    int i;	//index
+	int oneChar;
+	char* kernelBuf = NULL;
+
+	kernelBuf = new char[limit + 1]; //need for terminal string
+	if (!kernelBuf) return kernelBuf;
+	memset(kernelBuf, 0, limit + 1);
+
+	for (int i = 0; i < limit; ++i) {
+		ReadMem(virtAddr + i, 1, &oneChar);
+		kernelBuf[i] = (char)oneChar;
+		if (0 == oneChar) break; //null terminated appeared
+	}
+
+	return kernelBuf;
+}
+
+int Machine::System2User(int virtAddr, int len, char* buffer) {
+	if (len < 0) return -1;
+	if (0 == len) return len;
+	int i = 0;
+	int oneChar = 0;
+	do {
+		oneChar = (int)buffer[i];
+		this->WriteMem(virtAddr + i, 1, oneChar);
+		++i;
+	} while (i < len && oneChar != 0);
+
+	return i;
+}
+
+
+// Put this function at the end of each system call 
+void Machine::IncreaseProgramCounter(){
+    WriteRegister(PrevPCReg, ReadRegister(PCReg));
+    WriteRegister(PCReg, ReadRegister(NextPCReg));
+    WriteRegister(NextPCReg, ReadRegister(NextPCReg) + 4);
+}

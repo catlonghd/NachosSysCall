@@ -65,7 +65,7 @@ ExceptionHandler(ExceptionType which)
         return;
     case PageFaultException:
         DEBUG('a', "\nNo valid translation found");
-        printf("No valid translation found")
+        printf("No valid translation found");
         interrupt->Halt();
         break;
     
