@@ -24,7 +24,7 @@
 #include "copyright.h"
 #include "system.h"
 #include "syscall.h"
-
+#include "cmath"
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -34,7 +34,7 @@
 // 	For system calls, the following is the calling convention:
 //
 // 	system call code -- r2
-//		arg1 -- r4
+//		arg1 -- r4s
 //		arg2 -- r5
 //		arg3 -- r6
 //		arg4 -- r7
@@ -59,6 +59,11 @@ ExceptionHandler(ExceptionType which)
     char* s2;
     int a;
 
+    //ReadInt
+    char* buffer = new char[256];
+    int len;
+    bool check = true;
+
     switch (which)
     {
     case NoException:
@@ -75,7 +80,60 @@ ExceptionHandler(ExceptionType which)
                 DEBUG('a', "Shutdown, initialated by user program.\n");
                 interrupt->Halt();
                 break;
-            
+            case SC_ReadInt:
+            {
+                len = SynchConsole->Read(buffer, 256);
+                int i = 0;
+
+                if(buffer[0] == '-')
+                    i++;
+
+                for(; i < len; i++) 
+                {
+                    if(buffer[i] < '0' || buffer[i] > '9')
+                    {
+                        machine->WriteRegister(2,0);
+                        printf("\nNot an Integer\n");
+                        check = false;
+                        break;
+                    }
+                }   
+
+                if(!check)
+                    break;
+                int result = atoi(buffer);
+
+                machine->WriteRegister(buffer);
+                break;
+            }
+            case SC_PrintInt:
+            {
+                int number = machine->ReadRegister(4);
+                if(number == 0)
+                {
+                    SynchConsole->Write("0", 1);
+                    break;
+                }
+
+                bool sign = number < 0 ? 1 : 0;
+                number *= 1 - sign * 2;
+
+                int numLen = (int)log10(number) + 1;
+                numLen += sign;
+
+                char* toScreen = new char[numLen + 1];
+                toScreen[numLen] = "\0";
+                int i = numLen - 1;
+                while(number) 
+                {
+                    toScreen[i] = (char)((number % 10) + '0');
+                    number /= 10;
+                    i--;
+                }
+                toScreen[0] = sign ? '-' : toScreen[0];
+
+                SynchConsole->Write(toScreen, numLen + 1);
+            }
         }
         break;
     case ReadOnlyException:
