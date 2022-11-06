@@ -82,7 +82,7 @@ ExceptionHandler(ExceptionType which)
                 break;
             case SC_ReadInt:
             {
-                len = SynchConsole->Read(buffer, 256);
+                len = gSynchConsole->Read(buffer, 256);
                 int i = 0;
 
                 if(buffer[0] == '-')
@@ -111,7 +111,7 @@ ExceptionHandler(ExceptionType which)
                 int number = machine->ReadRegister(4);
                 if(number == 0)
                 {
-                    SynchConsole->Write("0", 1);
+                    gSynchConsole->Write("0", 1);
                     break;
                 }
 
@@ -122,7 +122,7 @@ ExceptionHandler(ExceptionType which)
                 numLen += sign;
 
                 char* toScreen = new char[numLen + 1];
-                toScreen[numLen] = "\0";
+                toScreen[numLen] = '\0';
                 int i = numLen - 1;
                 while(number) 
                 {
@@ -132,7 +132,7 @@ ExceptionHandler(ExceptionType which)
                 }
                 toScreen[0] = sign ? '-' : toScreen[0];
 
-                SynchConsole->Write(toScreen, numLen + 1);
+                gSynchConsole->Write(toScreen, numLen + 1);
             }
         }
         break;
