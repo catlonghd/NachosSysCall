@@ -71,3 +71,9 @@ ReadPrintInt.o: ReadPrintInt.c
 ReadPrintInt: ReadPrintInt.o ReadPrintInt.o
 	$(LD) $(LDFLAGS) start.o ReadPrintInt.o -o ReadPrintInt.coff
 	../bin/coff2noff ReadPrintInt.coff ReadPrintInt
+
+ReadPrintString.o: ReadPrintString.c
+	$(CC) $(CFLAGS) -c ReadPrintString.c
+ReadPrintString: ReadPrintString.o ReadPrintString.o
+	$(LD) $(LDFLAGS) start.o ReadPrintString.o -o ReadPrintString.coff
+	../bin/coff2noff ReadPrintString.coff ReadPrintString

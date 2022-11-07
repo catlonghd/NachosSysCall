@@ -25,6 +25,9 @@
 #include "system.h"
 #include "syscall.h"
 #include "cmath"
+
+
+#define MAX_BUFFER_LENGTH 255
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -59,11 +62,7 @@ ExceptionHandler(ExceptionType which)
     char* s2;
     int a;
 
-    //ReadInt
-    char* buffer = new char[256];
-    int len;
-    bool check = true;
-
+    
     switch (which)
     {
     case NoException:
@@ -82,6 +81,10 @@ ExceptionHandler(ExceptionType which)
                 break;
             case SC_ReadInt:
             {
+                char* buffer = new char[256];
+                int len;
+                bool check = true;
+
                 len = gSynchConsole->Read(buffer, 256);
                 int i = 0;
 
@@ -104,6 +107,8 @@ ExceptionHandler(ExceptionType which)
                 int result = atoi(buffer);
 
                 machine->WriteRegister(buffer);
+
+                machine->IncreaseProgramCounter();
                 break;
             }
             case SC_PrintInt:
@@ -133,6 +138,39 @@ ExceptionHandler(ExceptionType which)
                 toScreen[0] = sign ? '-' : toScreen[0];
 
                 gSynchConsole->Write(toScreen, numLen + 1);
+
+                machine->IncreaseProgramCounter();
+                break;
+            }
+            case SC_ReadString:
+            {   
+                int virtAddr = machine->ReadRegister(4);
+                int len = machine->ReadRegister(5);
+                char* buffer = machine->User2System(virtAddr, len);
+                gSynchConsole->Read(buffer, len);
+                machine->System2User(virtAddr, len, buffer);
+                
+                delete[] buffer;
+
+                machine->IncreaseProgramCounter();
+                break;
+            }
+            case SC_PrintString:
+            {
+                int len = 0;
+                char* buffer = machine->User2System(machine->ReadRegister(4), MAX_BUFFER_LENGTH);
+
+                while(len < MAX_BUFFER_LENGTH && buffer[len] != NULL) len++;
+
+                if(len == MAX_BUFFER_LENGTH){
+                    DEBUG('a', "Error: String length cannot over 254 characters");
+                }
+                else {
+                    gSynchConsole->Write(buffer, len + 1);
+                }
+
+                machine->IncreaseProgramCounter();
+                break;  
             }
         }
         break;
