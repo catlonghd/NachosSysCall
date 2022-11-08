@@ -25,6 +25,9 @@
 #include "system.h"
 #include "syscall.h"
 #include "cmath"
+
+
+#define MAX_BUFFER_LENGTH 255
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -59,8 +62,8 @@ ExceptionHandler(ExceptionType which)
     char* s2;
     int a;
 
-    //ReadInt, PrintInt
-    char* buffer = new char[255];
+    //ReadInt
+    char* buffer = new char[256];
     int len;
     bool check = true;
 
@@ -82,6 +85,10 @@ ExceptionHandler(ExceptionType which)
                 break;
             case SC_ReadInt:
             {
+                char* buffer = new char[256];
+                int len;
+                bool check = true;
+
                 len = gSynchConsole->Read(buffer, 256);
                 int i = 0;
 
@@ -103,7 +110,7 @@ ExceptionHandler(ExceptionType which)
                     break;
                 int result = atoi(buffer);
 
-                machine->WriteRegister(2, 0);
+                machine->WriteRegister(2, result);
                 interrupt->Halt();
                 break;
             }
