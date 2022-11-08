@@ -34,7 +34,7 @@
 // 	For system calls, the following is the calling convention:
 //
 // 	system call code -- r2
-//		arg1 -- r4s
+//		arg1 -- r4
 //		arg2 -- r5
 //		arg3 -- r6
 //		arg4 -- r7
@@ -59,8 +59,8 @@ ExceptionHandler(ExceptionType which)
     char* s2;
     int a;
 
-    //ReadInt
-    char* buffer = new char[256];
+    //ReadInt, PrintInt
+    char* buffer = new char[255];
     int len;
     bool check = true;
 
@@ -103,7 +103,8 @@ ExceptionHandler(ExceptionType which)
                     break;
                 int result = atoi(buffer);
 
-                machine->WriteRegister(buffer);
+                machine->WriteRegister(2, 0);
+                interrupt->Halt();
                 break;
             }
             case SC_PrintInt:
@@ -133,6 +134,8 @@ ExceptionHandler(ExceptionType which)
                 toScreen[0] = sign ? '-' : toScreen[0];
 
                 gSynchConsole->Write(toScreen, numLen + 1);
+                interrupt->Halt();
+                break;
             }
         }
         break;
