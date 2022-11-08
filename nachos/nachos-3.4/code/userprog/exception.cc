@@ -106,7 +106,7 @@ ExceptionHandler(ExceptionType which)
                     break;
                 int result = atoi(buffer);
 
-                machine->WriteRegister(buffer);
+                //machine->WriteRegister(buffer);
 
                 machine->IncreaseProgramCounter();
                 break;
