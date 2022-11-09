@@ -93,29 +93,31 @@ ExceptionHandler(ExceptionType which)
                 int i = 0;
 
                 if(len == 0){
-		    DEBUG('a', "Cannot be empty");
-		    break;
+		            DEBUG('a', "Cannot be empty");
+                    machine->WriteRegister(2, 0);
                 }
-
-                if(buffer[0] == '-')
+                else{
+                    if(buffer[0] == '-')
                     i++;
 
-                for(; i < len; i++) 
-                {
-                    if(buffer[i] < '0' || buffer[i] > '9')
+                    for(; i < len; i++) 
                     {
-                        machine->WriteRegister(2,0);
-                        printf("\nNot an Integer\n");
-                        check = false;
-                        break;
+                        if(buffer[i] < '0' || buffer[i] > '9')
+                        {
+                            machine->WriteRegister(2,0);
+                            printf("\nNot an Integer\n");
+                            check = false;
+                            break;
+                        }
                     }
+
+                    if(!check)
+                        break;
+                    int result = atoi(buffer);
+
+                    machine->WriteRegister(2, result);
                 }
 
-                if(!check)
-                    break;
-                int result = atoi(buffer);
-
-                machine->WriteRegister(2, result);
                 machine->IncreaseProgramCounter();
                 break;
             }
