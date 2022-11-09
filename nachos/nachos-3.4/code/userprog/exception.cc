@@ -111,7 +111,7 @@ ExceptionHandler(ExceptionType which)
                 int result = atoi(buffer);
 
                 machine->WriteRegister(2, result);
-                interrupt->Halt();
+                machine->IncreaseProgramCounter();
                 break;
             }
             case SC_PrintInt:
@@ -141,7 +141,7 @@ ExceptionHandler(ExceptionType which)
                 toScreen[0] = sign ? '-' : toScreen[0];
 
                 gSynchConsole->Write(toScreen, numLen + 1);
-                interrupt->Halt();
+                machine->IncreaseProgramCounter();
                 break;
             }
             case SC_ReadString:
