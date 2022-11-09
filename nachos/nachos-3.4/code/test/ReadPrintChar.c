@@ -7,6 +7,6 @@ int main()
     test = ReadChar();
     PrintString("Ky tu da nhap: ");
     PrintChar(test);
-
+    PrintChar('\n');
     Halt();
 }

@@ -7,6 +7,6 @@ int main()
     test = ReadInt();
     PrintString("So da nhap: ");
     PrintInt(test);
-
+    PrintChar('\n');
     Halt();
 }

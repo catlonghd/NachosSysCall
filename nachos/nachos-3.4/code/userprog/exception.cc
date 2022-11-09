@@ -92,31 +92,40 @@ ExceptionHandler(ExceptionType which)
                 len = gSynchConsole->Read(buffer, MAX_BUFFER_LENGTH);
                 int i = 0;
 
+
+		//Chuoi rong
                 if(len == 0){
-		            //DEBUG('a', "Cannot be empty");
+		            DEBUG('a', "Not an integer number");
                     machine->WriteRegister(2, 0);
 		    
                 }
                 else{
+		    //Neu ky tu dau la - thi tang index them 1
                     if(buffer[0] == '-')
                     i++;
 
+
+		    //Duyet qua tung ky tu de kiem tra cac ky tu co phai la so hay khong
                     for(; i < len; i++) 
                     {
+			//Neu khong phai ky tu so thi ghi vao bo nho 0
                         if(buffer[i] < '0' || buffer[i] > '9')
                         {
+			    DEBUG('a', "Not an integer number");
                             machine->WriteRegister(2,0);
-                            printf("\nNot an Integer\n");
                             check = false;
                             break;
                         }
                     }
 
-                    if(!check)
-                        break;
-                    int result = atoi(buffer);
 
-                    machine->WriteRegister(2, result);
+	            //Sau khi kiem tra neu la so hop le thi ghi ket qua vao vung nho
+                    if(check)
+                    {   
+                        int result = atoi(buffer);
+ 
+                        machine->WriteRegister(2, result);
+		    }
                 }
 
                 machine->IncreaseProgramCounter();
@@ -125,10 +134,12 @@ ExceptionHandler(ExceptionType which)
             case SC_PrintInt:
             {
                 int number = machine->ReadRegister(4);
+
+		//Neu so doc duoc la 0 thi tang program counter va dung chuong trinh
                 if(number == 0)
                 {
                     gSynchConsole->Write("0", 1);
-		            machine->IncreaseProgramCounter();
+		    machine->IncreaseProgramCounter();
                     break;
                 }
 
@@ -158,7 +169,8 @@ ExceptionHandler(ExceptionType which)
                 char* buffer = new char[MAX_BUFFER_LENGTH + 1];
                 
                 int numBytesRead = gSynchConsole->Read(buffer, MAX_BUFFER_LENGTH);
-
+		
+		//Neu chuo la rong thi ghi vao vung nho NULL
                 if(numBytesRead == 0){
                     machine->WriteRegister(2, 0);
                 }
@@ -174,7 +186,10 @@ ExceptionHandler(ExceptionType which)
             case SC_PrintChar:
             {
 		char output = (char)machine->ReadRegister(4);
+
+		//Neu nguoi dung nhap vao chuoi thi chi lay ky tu dau tien
                 gSynchConsole->Write(&output, 1);
+
                 machine->IncreaseProgramCounter();
                 break;
             }
@@ -182,6 +197,8 @@ ExceptionHandler(ExceptionType which)
             {   
                 int virtAddr = machine->ReadRegister(4);
                 int len = machine->ReadRegister(5);
+		
+		//Copy chuoi vua nhap vao vung nho he thong
                 char* buffer = machine->User2System(virtAddr, len);
                 gSynchConsole->Read(buffer, len);
                 machine->System2User(virtAddr, len, buffer);
@@ -196,8 +213,10 @@ ExceptionHandler(ExceptionType which)
                 int len = 0;
                 char* buffer = machine->User2System(machine->ReadRegister(4), MAX_BUFFER_LENGTH);
 
+		//Lay do dai cua chuoi
                 while(len < MAX_BUFFER_LENGTH && buffer[len] != NULL) len++;
-
+		
+		//Do dai chuoi vuot qua do dai quy dinh
                 if(len == MAX_BUFFER_LENGTH){
                     DEBUG('a', "Error: String length cannot over 254 characters");
                 }
@@ -208,6 +227,10 @@ ExceptionHandler(ExceptionType which)
                 machine->IncreaseProgramCounter();
                 break;  
             }
+	    default:
+		printf("Unexpected user mode exception %d %d\n", which, type);
+	    	ASSERT(FALSE);
+		machine->IncreaseProgramCounter();
         }
         break;
     case ReadOnlyException:
