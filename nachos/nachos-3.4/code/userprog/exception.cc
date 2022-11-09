@@ -91,15 +91,12 @@ ExceptionHandler(ExceptionType which)
 
                 len = gSynchConsole->Read(buffer, MAX_BUFFER_LENGTH);
                 int i = 0;
-                if(len == 0){
-                    printf("Input cannot be empty!");
-                    break;
-                }
 
                 if(len == 0){
-                    DEBUG('a', "Input cannot be empty!");
+		    DEBUG('a', "Cannot be empty");
+		    break;
                 }
-                
+
                 if(buffer[0] == '-')
                     i++;
 
@@ -112,7 +109,7 @@ ExceptionHandler(ExceptionType which)
                         check = false;
                         break;
                     }
-                }   
+                }
 
                 if(!check)
                     break;
@@ -159,28 +156,12 @@ ExceptionHandler(ExceptionType which)
                 int numBytesRead = gSynchConsole->Read(buffer, MAX_BUFFER_LENGTH);
 
                 if(numBytesRead == 0){
-                    DEBUG('a', "ERROR: Empty ")
+                    DEBUG('a', "ERROR: Empty ");
                 }
                 
             }
 
-            case SC_PrintChar:
-            {
-                // thong bao
-                DEBUG(dbgSys, "System call: Print char \n");
-                // doc ki tu tu thanh ghi
-                char character = (char)kernel->machine->ReadRegister(4);
-                // xuat ra console
-                SysPrintChar(character);
-                // tang thanh ghi pc
-                IncreasePC();
-
-                return;
-
-                ASSERTNOTREACHED();
-
-                break;
-            }
+           
             case SC_ReadString:
             {   
                 int virtAddr = machine->ReadRegister(4);
