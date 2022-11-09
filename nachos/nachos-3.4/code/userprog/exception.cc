@@ -127,6 +127,7 @@ ExceptionHandler(ExceptionType which)
                 if(number == 0)
                 {
                     gSynchConsole->Write("0", 1);
+                    
                     break;
                 }
 
