@@ -144,6 +144,36 @@ ExceptionHandler(ExceptionType which)
                 interrupt->Halt();
                 break;
             }
+            case SC_ReadString:
+            {   
+                int virtAddr = machine->ReadRegister(4);
+                int len = machine->ReadRegister(5);
+                char* buffer = machine->User2System(virtAddr, len);
+                gSynchConsole->Read(buffer, len);
+                machine->System2User(virtAddr, len, buffer);
+                
+                delete[] buffer;
+
+                machine->IncreaseProgramCounter();
+                break;
+            }
+            case SC_PrintString:
+            {
+                int len = 0;
+                char* buffer = machine->User2System(machine->ReadRegister(4), MAX_BUFFER_LENGTH);
+
+                while(len < MAX_BUFFER_LENGTH && buffer[len] != NULL) len++;
+
+                if(len == MAX_BUFFER_LENGTH){
+                    DEBUG('a', "Error: String length cannot over 254 characters");
+                }
+                else {
+                    gSynchConsole->Write(buffer, len + 1);
+                }
+
+                machine->IncreaseProgramCounter();
+                break;  
+            }
         }
         break;
     case ReadOnlyException:
