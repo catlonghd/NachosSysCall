@@ -174,7 +174,8 @@ ExceptionHandler(ExceptionType which)
             }
             case SC_PrintChar:
             {
-                gSynchConsole->Write(&machine->ReadRegister(4), 1);
+		char output = (char)machine->ReadRegister(4);
+                gSynchConsole->Write(&output, 1);
                 machine->IncreaseProgramCounter();
                 break;
             }

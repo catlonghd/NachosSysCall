@@ -11,10 +11,8 @@
 
 #define MAX 100
 
-int main()
-{
-    int n = 0;
-    int a[MAX];
+int main(){
+    int n = 0, i, j, temp, a[MAX];
     PrintString("Nhap kich thuoc mang: ");
     n = ReadInt();
     while(n <= 0 || n > MAX){
@@ -24,7 +22,7 @@ int main()
     }
 
     PrintString("Nhap mang:\n");
-    for(int i = 0; i<n; i++){
+    for(i = 0; i<n; i++){
         PrintString("a[");
         PrintInt(i);
         PrintString("]: ");
@@ -32,25 +30,26 @@ int main()
     }
 
     PrintString("Mang ban dau: ");
-    for(int i = 0; i<n; i++){
+    for(i = 0; i<n; i++){
         PrintInt(a[i]);
+	PrintChar(' ');
     }
     PrintChar('\n');
 
-    int temp; // biến tạm temp
-    for (int i = 0; i < n; i++){
-        for (int j = i + 1; j < n; j++){
+    for (i = 0; i < n-1; i++){
+        for (j = 0; j < n-i-1; j++){
             if (a[j] > a[j+1]){
                 temp = a[j];
                 a[j] = a[j+1];
                 a[j+1] = temp;
             }
-		}
 	}
+    }
 
     PrintString("Mang sau khi da sap xep: ");
-    for(int i = 0; i<n; i++){
+    for(i = 0; i<n; i++){
         PrintInt(a[i]);
+	PrintChar(' ');
     }
     PrintChar('\n');
 
