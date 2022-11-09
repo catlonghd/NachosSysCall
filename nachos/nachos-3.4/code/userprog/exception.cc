@@ -91,6 +91,10 @@ ExceptionHandler(ExceptionType which)
 
                 len = gSynchConsole->Read(buffer, 256);
                 int i = 0;
+                if(len == 0){
+                    printf("Input cannot be empty!");
+                    break;
+                }
 
                 if(buffer[0] == '-')
                     i++;
