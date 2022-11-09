@@ -10,5 +10,5 @@ int main(){
 
 
     PrintString("Mo ta chuong trinh ascii\n");
-    PrintString("Chuong trinh ascii cho phep in ra gia tri decimal cua mot ki tu ");
+    PrintString("Chuong trinh ascii cho phep in ra gia tri decimal cua mot ki tu và in ra k ");
 }

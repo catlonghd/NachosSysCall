@@ -85,17 +85,21 @@ ExceptionHandler(ExceptionType which)
                 break;
             case SC_ReadInt:
             {
-                char* buffer = new char[256];
+                char* buffer = new char[MAX_BUFFER_LENGTH + 1];
                 int len;
                 bool check = true;
 
-                len = gSynchConsole->Read(buffer, 256);
+                len = gSynchConsole->Read(buffer, MAX_BUFFER_LENGTH);
                 int i = 0;
                 if(len == 0){
                     printf("Input cannot be empty!");
                     break;
                 }
 
+                if(len == 0){
+                    DEBUG('a', "Input cannot be empty!");
+                }
+                
                 if(buffer[0] == '-')
                     i++;
 
@@ -146,6 +150,35 @@ ExceptionHandler(ExceptionType which)
 
                 gSynchConsole->Write(toScreen, numLen + 1);
                 machine->IncreaseProgramCounter();
+                break;
+            }
+            case SC_ReadChar:
+            {  
+                char* buffer = new char[MAX_BUFFER_LENGTH + 1];
+                
+                int numBytesRead = gSynchConsole->Read(buffer, MAX_BUFFER_LENGTH);
+
+                if(numBytesRead == 0){
+                    DEBUG('a', "ERROR: Empty ")
+                }
+                
+            }
+
+            case SC_PrintChar:
+            {
+                // thong bao
+                DEBUG(dbgSys, "System call: Print char \n");
+                // doc ki tu tu thanh ghi
+                char character = (char)kernel->machine->ReadRegister(4);
+                // xuat ra console
+                SysPrintChar(character);
+                // tang thanh ghi pc
+                IncreasePC();
+
+                return;
+
+                ASSERTNOTREACHED();
+
                 break;
             }
             case SC_ReadString:
