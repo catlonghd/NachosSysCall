@@ -93,7 +93,7 @@ ExceptionHandler(ExceptionType which)
                 int i = 0;
 
                 if(len == 0){
-		    //DEBUG('a', "Cannot be empty");
+		            //DEBUG('a', "Cannot be empty");
                     machine->WriteRegister(2, 0);
 		    
                 }
@@ -160,7 +160,6 @@ ExceptionHandler(ExceptionType which)
                 int numBytesRead = gSynchConsole->Read(buffer, MAX_BUFFER_LENGTH);
 
                 if(numBytesRead == 0){
-                    DEBUG('a', "ERROR: Empty input!");
                     machine->WriteRegister(2, 0);
                 }
                 else{
